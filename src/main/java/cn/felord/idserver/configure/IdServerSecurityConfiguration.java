@@ -107,7 +107,13 @@ public class IdServerSecurityConfiguration {
                     .formLogin()
                     .and()
                     // 应用 授权服务器的配置
-                    .apply(authorizationServerConfigurer);
+                    .apply(authorizationServerConfigurer)
+                    .and()
+                    .oauth2ResourceServer(resource -> {
+                        resource.jwt();
+                    })
+
+            ;
             return http.build();
         }
 

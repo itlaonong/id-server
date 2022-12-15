@@ -42,9 +42,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -133,11 +131,16 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
 		}
 
 		if (entity.getAccessTokenValue() != null) {
+			Set<String> scopes = new HashSet<>();
+			if(entity.getAccessTokenScopes()!=null){
+				scopes.addAll(Arrays.asList(entity.getAccessTokenScopes().split(",")));
+			}
 			OAuth2AccessToken accessToken = new OAuth2AccessToken(
 					OAuth2AccessToken.TokenType.BEARER,
 					entity.getAccessTokenValue(),
 					entity.getAccessTokenIssuedAt(),
-					entity.getAccessTokenExpiresAt());
+					entity.getAccessTokenExpiresAt(),
+					scopes);
 			builder.token(accessToken, metadata -> metadata.putAll(parseMap(entity.getAccessTokenMetadata())));
 		}
 
